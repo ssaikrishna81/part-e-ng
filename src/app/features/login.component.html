@@ -1,0 +1,54 @@
+<!-- src/app/components/login/login.component.html -->
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h2 class="title" *ngIf="view==='login'">Welcome back</h2>
+    <h2 class="title" *ngIf="view==='register'">Create an account</h2>
+    <h2 class="title" *ngIf="view==='forgot'">Reset your password</h2>
+
+    <!-- Login -->
+    <form *ngIf="view==='login'" [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="you@email.com" />
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="••••••••" />
+      <button type="submit" class="primary-btn" [disabled]="loading">{{ loading ? 'Signing in…' : 'Log in' }}</button>
+
+      <div class="switches">
+        <a (click)="switch('forgot')">Forgot password?</a>
+        <span>·</span>
+        <a (click)="switch('register')">Create account</a>
+      </div>
+    </form>
+
+    <!-- Register -->
+    <form *ngIf="view==='register'" [formGroup]="registerForm" (ngSubmit)="onRegister()">
+      <label>Name</label>
+      <input type="text" formControlName="name" placeholder="Your full name" />
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="you@email.com" />
+      <label>Password</label>
+      <input type="password" formControlName="password" placeholder="Min 6 characters" />
+      <button type="submit" class="primary-btn" [disabled]="loading">{{ loading ? 'Creating…' : 'Sign up' }}</button>
+
+      <div class="switches">
+        <a (click)="switch('login')">Back to login</a>
+      </div>
+    </form>
+
+    <!-- Forgot -->
+    <form *ngIf="view==='forgot'" [formGroup]="forgotForm" (ngSubmit)="onForgot()">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="you@email.com" />
+      <button type="submit" class="primary-btn" [disabled]="loading">{{ loading ? 'Sending…' : 'Send reset link' }}</button>
+
+      <div class="switches">
+        <a (click)="switch('login')">Back to login</a>
+        <span>·</span>
+        <a (click)="switch('register')">Create account</a>
+      </div>
+    </form>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+    <p class="success" *ngIf="success">{{ success }}</p>
+  </div>
+</div>

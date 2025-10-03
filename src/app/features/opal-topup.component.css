@@ -1,0 +1,4 @@
+.row { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+input, button { padding:10px 12px; }
+button { cursor:pointer; }
+.error { color:#ff9898; font-size:12px; margin-top:4px; }

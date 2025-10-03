@@ -1,0 +1,23 @@
+<ng-container *ngIf="svc.state() as s">
+  <div class="dialog-backdrop" (click)="onBackdropClick()"></div>
+
+  <div class="dialog" role="dialog" aria-modal="true">
+    <h3 class="dialog-title">{{ s.title }}</h3>
+
+    <div class="dialog-body">
+      <ng-container *ngIf="s.lines?.length">
+        <p *ngFor="let line of s.lines">{{ line }}</p>
+      </ng-container>
+      <div *ngIf="s.html" [innerHTML]="s.html"></div>
+    </div>
+
+    <div class="dialog-actions">
+      <button
+        *ngFor="let b of (s.buttons ?? defaultButtons)"
+        (click)="onButton(b.value)"
+        [class.primary]="b.role === 'primary'">
+        {{ b.text }}
+      </button>
+    </div>
+  </div>
+</ng-container>

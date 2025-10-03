@@ -1,0 +1,68 @@
+<section style="max-width:720px;margin:16px auto;border:1px solid #2b3756;border-radius:12px;padding:16px">
+  <h2>Opal Card Top-Up</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+    <div class="row">
+      <label>Card Number</label>
+      <input formControlName="cardNumber" placeholder="16 digits" />
+      <small class="error" *ngIf="form.get('cardNumber')?.invalid && (form.get('cardNumber')?.touched || form.get('cardNumber')?.dirty)">
+        Card number is required (8–20 chars).
+      </small>
+    </div>
+
+    <div class="row">
+      <label>Security Code</label>
+      <input formControlName="securityCode" placeholder="4 digits" />
+      <small class="error" *ngIf="form.get('securityCode')?.invalid && (form.get('securityCode')?.touched || form.get('securityCode')?.dirty)">
+        Security code is required.
+      </small>
+    </div>
+
+    <div class="row">
+      <label>Amount</label>
+      <select formControlName="amountOption">
+        <option value="10">$10</option>
+        <option value="20">$20</option>
+        <option value="50">$50</option>
+        <option value="100">$100</option>
+        <option value="custom">Custom…</option>
+      </select>
+    </div>
+
+    <div class="row" *ngIf="form.get('amountOption')?.value === 'custom'">
+      <label>Custom amount (AUD)</label>
+      <input type="number" formControlName="customAmount" min="1" />
+      <small class="error" *ngIf="form.get('customAmount')?.invalid && (form.get('customAmount')?.touched || form.get('customAmount')?.dirty)">
+        Enter an amount ≥ 1.
+      </small>
+    </div>
+
+    <div class="row" style="grid-column:1/-1">
+      <label>Top-up type</label>
+      <div>
+        <label><input type="radio" formControlName="topupType" value="oneoff" /> One-off</label>
+        <label style="margin-left:12px"><input type="radio" formControlName="topupType" value="auto" /> Auto top-up</label>
+      </div>
+      <small class="muted" *ngIf="form.get('topupType')?.value === 'auto'">
+        Requires registered card; this updates your auto top-up settings.
+      </small>
+    </div>
+
+    <div class="row" style="grid-column:1/-1">
+      <label><input type="checkbox" formControlName="receipt" /> Email me a receipt</label>
+      <div *ngIf="form.get('receipt')?.value" style="margin-top:6px; max-width:360px">
+        <input type="email" formControlName="receiptEmail" placeholder="your@email.com" />
+        <small class="error" *ngIf="form.get('receiptEmail')?.invalid && (form.get('receiptEmail')?.touched || form.get('receiptEmail')?.dirty)">
+          Enter a valid email.
+        </small>
+      </div>
+    </div>
+
+    <div style="grid-column:1/-1; text-align:right">
+      <button type="submit" [disabled]="form.invalid || loading">{{ loading ? 'Submitting…' : 'Top-Up' }}</button>
+    </div>
+  </form>
+
+  <!-- optional dev error -->
+  <pre *ngIf="error" style="margin-top:12px;border:1px solid #ff7a7a;padding:8px">{{ error }}</pre>
+</section>

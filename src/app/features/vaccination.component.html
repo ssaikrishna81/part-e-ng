@@ -1,0 +1,146 @@
+<section class="wrap">
+
+  <h2>Vaccination Booking</h2>
+
+  <!-- Card 1: Search -->
+  <div class="card">
+    <h3>1) Find an appointment</h3>
+
+    <form [formGroup]="searchForm" (ngSubmit)="search()" class="grid">
+      <div class="field">
+        <label>Vaccine</label>
+        <select formControlName="vaccine">
+          <option value="covid19">COVID-19</option>
+          <option value="flu">Influenza</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Postcode</label>
+        <input formControlName="postcode" placeholder="e.g., 2500" />
+        <small class="error"
+          *ngIf="searchForm.get('postcode')?.invalid && (searchForm.get('postcode')?.touched || searchForm.get('postcode')?.dirty)">
+          Postcode is required.
+        </small>
+      </div>
+
+      <div class="field">
+        <label>Date</label>
+        <input type="date" formControlName="date" />
+      </div>
+
+      <div class="actions">
+        <button type="submit" [disabled]="loading">{{ loading ? 'Searching…' : 'Search' }}</button>
+      </div>
+    </form>
+
+    <div *ngIf="!loading && !slots.length" class="muted">No slots yet — try a search.</div>
+
+    <div class="slotlist" *ngIf="slots.length">
+      <div class="slot" *ngFor="let s of slots">
+        <div>
+          <strong>{{ s.clinicName }}</strong><br />
+          {{ s.date }} {{ s.time }} — <code>{{ s.id }}</code>
+        </div>
+        <button type="button" (click)="selectSlot(s)">Select</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Eligibility -->
+  <div class="card" *ngIf="selectedSlot">
+    <h3>2) Check eligibility (Medicare)</h3>
+
+    <div class="selected">
+      Selected slot:
+      <code>{{ selectedSlot?.id }}</code> — {{ selectedSlot?.clinicName }}
+      ({{ selectedSlot?.date }} {{ selectedSlot?.time }})
+    </div>
+
+    <form [formGroup]="eligibilityForm" (ngSubmit)="checkEligibility()" class="grid">
+      <div class="field">
+        <label>Medicare Number</label>
+        <input formControlName="medicare" placeholder="10 digits" />
+        <small class="error"
+          *ngIf="eligibilityForm.get('medicare')?.invalid && (eligibilityForm.get('medicare')?.touched || eligibilityForm.get('medicare')?.dirty)">
+          <span *ngIf="eligibilityForm.get('medicare')?.errors?.['required']">Medicare is required.</span>
+          <span *ngIf="eligibilityForm.get('medicare')?.errors?.['pattern']">Enter 10 digits.</span>
+        </small>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Check eligibility</button>
+      </div>
+    </form>
+
+    <div *ngIf="eligibilityChecked && eligibleFree === true" class="banner ok">
+      Eligible for free vaccination.
+    </div>
+
+    <div *ngIf="eligibilityChecked && eligibleFree === false" class="banner warn">
+     You are <strong>not eligible for free vaccination</strong>. You can proceed to
+     <strong>book an appointment</strong> and <strong>pay the required fee in the clinic</strong>.
+    </div>
+  </div>
+
+  <!-- Card 3: Booking -->
+  <div class="card" *ngIf="selectedSlot && (eligibleFree === true || payAtClinic)">
+    <h3>3) Your details</h3>
+
+    <div class="note" *ngIf="payAtClinic && eligibleFree === false">
+      <strong>Payment at clinic</strong> — bring ID and a payment method.
+    </div>
+
+    <form [formGroup]="bookForm" (ngSubmit)="book()" class="grid">
+      <div>
+        <div class="field">
+          <label>Slot ID</label>
+          <input formControlName="slotId" readonly />
+        </div>
+
+        <div class="field">
+          <label>Name</label>
+          <input formControlName="name" />
+          <small class="error"
+            *ngIf="bookForm.get('name')?.invalid && (bookForm.get('name')?.touched || bookForm.get('name')?.dirty)">
+            Name is required.
+          </small>
+        </div>
+
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" formControlName="dob" />
+          <small class="error"
+            *ngIf="bookForm.get('dob')?.invalid && (bookForm.get('dob')?.touched || bookForm.get('dob')?.dirty)">
+            Date of birth is required.
+          </small>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" formControlName="email" />
+        <small class="error"
+          *ngIf="bookForm.get('email')?.invalid && (bookForm.get('email')?.touched || bookForm.get('email')?.dirty)">
+          <span *ngIf="bookForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="bookForm.get('email')?.errors?.['email']">Enter a valid email.</span>
+        </small>
+      </div>
+
+      <div class="actions">
+        <button type="submit" [disabled]="booking">{{ booking ? 'Booking…' : 'Confirm Booking' }}</button>
+      </div>
+    </form>
+
+    <!-- Optional dev outputs -->
+    <pre *ngIf="bookResult" class="result">{{ bookResult | json }}</pre>
+    <pre *ngIf="bookError"  class="result errorbox">{{ bookError }}</pre>
+  </div>
+
+  <!-- Loader overlay shown during booking -->
+  <div class="overlay" *ngIf="booking" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Confirming your booking…</p>
+  </div>
+</section>

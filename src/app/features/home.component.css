@@ -1,4 +1,0 @@
-.home { max-width: 900px; margin: 24px auto; padding: 0 16px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
-.card { display: block; padding: 16px; border: 1px solid #ccc; border-radius: 12px; text-decoration: none; color: inherit; }
-.card:hover { background: #f6f6f6; }

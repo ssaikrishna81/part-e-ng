@@ -3,6 +3,15 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
     <div class="row">
+      <label>Card Type</label>
+      <select formControlName="cardType">
+        <option value="basic">Basic Card</option>
+        <option value="concessions">Concessions Card</option>
+      </select>
+    </div>
+
+    <!-- ...existing code... -->
+    <div class="row">
       <label>Card Number</label>
       <input formControlName="cardNumber" placeholder="16 digits" />
       <small class="error" *ngIf="form.get('cardNumber')?.invalid && (form.get('cardNumber')?.touched || form.get('cardNumber')?.dirty)">
@@ -21,7 +30,9 @@
     <div class="row">
       <label>Amount</label>
       <select formControlName="amountOption">
-        <option value="10">$10</option>
+        <option *ngIf="form.get('cardType')?.value === 'basic'" value="10">$10</option>
+        <option *ngIf="form.get('cardType')?.value === 'concessions'" value="5">$5</option>
+        <option *ngIf="form.get('cardType')?.value === 'concessions'" value="10">$10</option>
         <option value="20">$20</option>
         <option value="50">$50</option>
         <option value="100">$100</option>
@@ -31,9 +42,9 @@
 
     <div class="row" *ngIf="form.get('amountOption')?.value === 'custom'">
       <label>Custom amount (AUD)</label>
-      <input type="number" formControlName="customAmount" min="1" />
+      <input type="number" formControlName="customAmount" [attr.min]="minAmount" />
       <small class="error" *ngIf="form.get('customAmount')?.invalid && (form.get('customAmount')?.touched || form.get('customAmount')?.dirty)">
-        Enter an amount ≥ 1.
+        Enter an amount ≥ {{ minAmount }}.
       </small>
     </div>
 

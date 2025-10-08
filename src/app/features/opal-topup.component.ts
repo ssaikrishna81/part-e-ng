@@ -13,12 +13,15 @@ import { DialogService } from '../shared/dialog.service';  // ⬅️ add this
   styleUrls: ['./opal-topup.component.css']
 })
 export class OpalTopupComponent {
+
   form!: FormGroup;
   loading = false;
   error = '';
+  minAmount = 10; // Default to Basic Card
 
   constructor(private fb: FormBuilder, private api: ApiService, private dialog: DialogService) {
     this.form = this.fb.group({
+      cardType: ['basic', Validators.required], // 'basic' | 'concessions'
       cardNumber: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
       securityCode: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(6)]],
 
@@ -30,11 +33,23 @@ export class OpalTopupComponent {
       receiptEmail: [{ value: '', disabled: true }, Validators.email],
     });
 
+    // Watch cardType changes to update minAmount and customAmount validator
+    this.form.get('cardType')?.valueChanges.subscribe(type => {
+      this.minAmount = type === 'concessions' ? 5 : 10;
+      // If custom is selected, update its min validator
+      if (this.form.get('amountOption')?.value === 'custom') {
+        const c = this.form.get('customAmount');
+        c?.setValidators([Validators.required, Validators.min(this.minAmount)]);
+        c?.updateValueAndValidity({ emitEvent: false });
+      }
+    });
+
     // toggle custom amount
     this.form.get('amountOption')?.valueChanges.subscribe(v => {
       const c = this.form.get('customAmount');
       if (v === 'custom') {
-        c?.enable(); c?.setValidators([Validators.required, Validators.min(1)]);
+        c?.enable();
+        c?.setValidators([Validators.required, Validators.min(this.minAmount)]);
       } else {
         c?.disable(); c?.clearValidators(); c?.setValue(null);
       }
@@ -54,12 +69,18 @@ export class OpalTopupComponent {
 
     // derive final amount
     const opt = this.form.get('amountOption')?.value as string;
-    const amount = opt === 'custom' ? Number(this.form.get('customAmount')?.value) : Number(opt);
-    if (!amount || isNaN(amount) || amount <= 0) { this.error = 'Enter a valid amount.'; return; }
+    let amount = opt === 'custom' ? Number(this.form.get('customAmount')?.value) : Number(opt);
+    const cardType = this.form.get('cardType')?.value;
+    const min = cardType === 'concessions' ? 5 : 10;
+    if (!amount || isNaN(amount) || amount < min) {
+      this.error = `Enter an amount ≥ $${min} for the selected card type.`;
+      return;
+    }
 
     this.loading = true; this.error = '';
 
     const payload = {
+      cardType: this.form.value.cardType!,
       cardNumber: this.form.value.cardNumber!,
       securityCode: this.form.value.securityCode!,
       amount,

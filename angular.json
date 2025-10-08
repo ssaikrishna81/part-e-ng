@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "part-e-ng": {
+  "part-e-opal": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -56,10 +56,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "part-e-ng:build:production"
+              "buildTarget": "part-e-opal:build:production"
             },
             "development": {
-              "buildTarget": "part-e-ng:build:development",
+              "buildTarget": "part-e-opal:build:development",
               "proxyConfig": "proxy.conf.json"
             }
           },

@@ -1,6 +1,6 @@
 // src/app/shared/api.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -44,10 +44,42 @@ export class ApiService {
 
   // -------------------------
   // Opal topups
-  // POST /api/v1/topups
-  createTopup(payload: {
+  // POST /api/v1/opal/balance
+  checkOpalBalance(payload: {
+    cardType: string;
     cardNumber: string;
     securityCode: string;
+  }): Observable<{ balance: number }> {
+    // Mock implementation
+    return new Observable(subscriber => {
+      setTimeout(() => {
+        // Generate a random balance between $0 and max allowed
+        const maxBalance = payload.cardType === 'basic' ? 250 : 150;
+        const balance = Math.floor(Math.random() * (maxBalance * 0.8));
+        
+        if (payload.cardNumber && payload.securityCode) {
+          subscriber.next({ balance });
+          subscriber.complete();
+        } else {
+          subscriber.error(new Error('Invalid card details'));
+        }
+      }, 800); // Simulate network delay
+    });
+  }
+
+  // POST /api/v1/topups
+  createTopup(payload: {
+    cardType: string;
+    opalCard: {
+      cardNumber: string;
+      securityCode: string;
+    };
+    payment: {
+      nameOnCard: string;
+      cardNumber: string;
+      expiryDate: string;
+      cvv: string;
+    };
     amount: number;
     topupType?: 'oneoff' | 'auto';
     receiptEmail?: string;
@@ -68,11 +100,9 @@ export class ApiService {
   }
 
   // POST /api/v1/water/pay
-payBill(payload: { billId: string; amount: number; cardNumber: string }): Observable<any> {
-  return this.http
-    .post<any>(`${API_BASE}/water/pay`, payload)
-    .pipe(catchError(this.handleError));
-}
+  payBill(payload: { billId: string; amount: number; cardNumber: string }): Observable<any> {
+    return this.http.post<any>(`${API_BASE}/water/pay`, payload).pipe(catchError(this.handleError));
+  }
 
   // -------------------------
   // Auth (if needed)

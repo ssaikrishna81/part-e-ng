@@ -133,9 +133,34 @@
       </div>
     </form>
 
-    <!-- Optional dev outputs -->
-    <pre *ngIf="bookResult" class="result">{{ bookResult | json }}</pre>
-    <pre *ngIf="bookError"  class="result errorbox">{{ bookError }}</pre>
+    <!-- Booking confirmation -->
+    <div *ngIf="bookResult" class="booking-summary">
+      <h4>🎉 Booking Confirmed!</h4>
+      <div class="summary-row">
+        <strong>Booking Reference:</strong>
+        <span>{{ bookResult.bookingRef }}</span>
+      </div>
+      <div class="summary-row">
+        <strong>Name:</strong>
+        <span>{{ bookResult.name }}</span>
+      </div>
+      <div class="summary-row">
+        <strong>Email:</strong>
+        <span>{{ bookResult.email }}</span>
+      </div>
+      <div class="summary-row">
+        <strong>Date of Birth:</strong>
+        <span>{{ bookResult.dob | date }}</span>
+      </div>
+      <div class="summary-row">
+        <strong>Payment:</strong>
+        <span>{{ bookResult.payAtClinic ? 'Pay at clinic' : 'Free (Medicare eligible)' }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="bookError" class="errorbox">
+      <strong>⚠️ Booking failed:</strong> {{ bookError }}
+    </div>
   </div>
 
   <!-- Loader overlay shown during booking -->

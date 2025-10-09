@@ -60,10 +60,11 @@ export class ApiService {
   // -------------------------
   // Water
   // POST /api/v1/water/bill
-  getBill(payload: { accountId: string }): Observable<any> {
-    // backend expects POST body with accountId per your docs
+  getBill(payload: { paymentNumber: string }): Observable<any> {
+    // Convert paymentNumber to accountId for backend compatibility
+    const backendPayload = { accountId: payload.paymentNumber };
     return this.http
-      .post<any>(`${API_BASE}/water/bill`, payload)
+      .post<any>(`${API_BASE}/water/bill`, backendPayload)
       .pipe(catchError(this.handleError));
   }
 

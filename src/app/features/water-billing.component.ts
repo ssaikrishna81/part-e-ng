@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ApiService } from '../shared/api.service';
-import { DialogService } from '../shared/dialog.service'; // ⬅️ added
+import { DialogService } from '../shared/dialog.service';
 
 @Component({
   selector: 'app-water-billing',
@@ -28,7 +28,7 @@ export class WaterBillingComponent {
 
   constructor(private fb: FormBuilder, private api: ApiService, private dialog: DialogService) {
     this.fetchForm = this.fb.group({
-      accountId: ['', Validators.required]
+      paymentNumber: ['', Validators.required]
     });
 
     this.payForm = this.fb.group({
@@ -43,11 +43,17 @@ export class WaterBillingComponent {
   }
 
   fetch() {
-    if (this.fetchForm.invalid) { this.fetchForm.markAllAsTouched(); return; }
+    if (this.fetchForm.invalid) {
+      this.dialog.open({
+        title: 'Error',
+        message: 'Please enter a payment number'
+      });
+      return;
+    }
     this.fetching = true;
     this.bill = null; this.selectedBill = null; this.payResult = null; this.payError = '';
 
-    this.api.getBill({ accountId: this.fetchForm.value.accountId }).subscribe({
+    this.api.getBill({ paymentNumber: this.fetchForm.value.paymentNumber }).subscribe({
       next: (res) => { this.bill = res; this.fetching = false; },
       error: (err) => { this.bill = { error: err?.message || 'Fetch failed' }; this.fetching = false; }
     });
@@ -59,6 +65,14 @@ export class WaterBillingComponent {
     this.payForm.get('billId')?.enable();
     this.payForm.patchValue({ billId: this.selectedBill.id, amountOption: 'full', customAmount: null });
     this.onAmountOptionChange(); // reset validators for custom field
+  }
+
+  openPaymentHelp() {
+    this.dialog.open({
+      title: 'Where to find your payment number',
+      message: 'Your payment number can be found on your bill as shown below:',
+      imageUrl: 'assets/bill-call-out.jpeg'
+    });
   }
 
   onAmountOptionChange() {
@@ -76,9 +90,26 @@ export class WaterBillingComponent {
     customCtrl?.updateValueAndValidity({ emitEvent: false });
   }
 
+  getPaymentAmount(): string {
+    const opt = this.payForm.get('amountOption')?.value;
+    if (!opt) return '0.00';
+    
+    if (opt === 'full') {
+      return this.selectedBill?.amountDue?.toFixed(2) || '0.00';
+    } else if (opt === 'custom') {
+      const amount = this.payForm.get('customAmount')?.value;
+      return amount ? amount.toFixed(2) : '0.00';
+    } else {
+      return opt;
+    }
+  }
+
   async pay() {
     if (!this.selectedBill) return;
-    if (this.payForm.invalid) { this.payForm.markAllAsTouched(); return; }
+    if (this.payForm.invalid) { 
+      this.payForm.markAllAsTouched(); 
+      return; 
+    }
 
     const opt = this.payForm.get('amountOption')?.value as string;
     const due = Number(this.selectedBill.amountDue || 0);
@@ -107,26 +138,21 @@ export class WaterBillingComponent {
           this.payResult = res;
           this.paying = false;
 
-          // Compute remaining balance locally for UX
-          const remaining = Math.max(0, due - amount);
-          this.selectedBill.amountDue = remaining;
-
-          // Try to show a receipt/transaction code if backend returns one
-          const receipt = this.pickReceipt(res);
-
-          const lines = [
-            ...(receipt ? [`Receipt: ${receipt}`] : []),
-            `Bill ID: ${this.selectedBill.id}`,
-            `Amount paid: $${amount.toFixed(2)}`,
-            `Remaining due: $${remaining.toFixed(2)}`,
-            'Note: It may take a few minutes for your account to reflect this payment.'
-          ];
+          const receipt = res.receiptId || res.transactionId || res.id || 'TXN-' + Date.now().toString().slice(-6);
 
           await this.dialog.open({
-            title: 'Payment successful',
-            lines,
-            buttons: [{ text: 'Done', role: 'primary' }]
+            title: 'Payment Successful!',
+            lines: [
+              `receiptId: ${receipt}`,
+              'Your payment has been processed successfully and the invoice will be sent to Mail.'
+            ],
+            buttons: [{ text: 'Close', role: 'primary' }]
           });
+
+          // Reset forms
+          this.bill = null;
+          this.selectedBill = null;
+          this.fetchForm.reset();
         },
         error: async (err) => {
           this.payError = err?.message || 'Payment failed';
@@ -141,15 +167,5 @@ export class WaterBillingComponent {
       });
   }
 
-  // Safely extract a receipt/transaction reference from any backend shape
-  private pickReceipt(res: unknown): string | null {
-    if (!res || typeof res !== 'object') return null;
-    const r = res as Record<string, unknown>;
-    const keys = ['receiptId', 'refId', 'reference', 'txnId', 'transactionId'] as const;
-    for (const k of keys) {
-      const v = r[k];
-      if (typeof v === 'string' && v.trim()) return v;
-    }
-    return null;
-  }
+  // (removed unused helper) 
 }

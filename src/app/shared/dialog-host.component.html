@@ -5,10 +5,14 @@
     <h3 class="dialog-title">{{ s.title }}</h3>
 
     <div class="dialog-body">
-      <ng-container *ngIf="s.lines?.length">
-        <p *ngFor="let line of s.lines">{{ line }}</p>
-      </ng-container>
       <div *ngIf="s.html" [innerHTML]="s.html"></div>
+      <ng-container *ngIf="!s.html">
+        <p *ngIf="s.message">{{ s.message }}</p>
+        <ng-container *ngIf="s.lines?.length">
+          <p *ngFor="let line of s.lines">{{ line }}</p>
+        </ng-container>
+        <img *ngIf="s.imageUrl" [src]="s.imageUrl" alt="Help image" class="dialog-image">
+      </ng-container>
     </div>
 
     <div class="dialog-actions">

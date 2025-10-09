@@ -1,46 +1,45 @@
 import { Injectable, signal } from '@angular/core';
 
-export type DialogButtonRole = 'primary' | 'secondary';
-
-export interface DialogButton<T = any> {
-  text: string;
-  value?: T;
-  role?: DialogButtonRole;
-}
-
-export interface DialogConfig<T = any> {
+export interface DialogConfig {
   title: string;
-  lines?: string[];          // simple multi-line content
-  html?: string;             // optional rich content (sanitise if needed)
-  buttons?: DialogButton<T>[]; // defaults to single “OK”
-  closeOnBackdrop?: boolean; // default: true
+  message?: string;
+  lines?: string[];
+  html?: string;
+  imageUrl?: string;
+  closeOnBackdrop?: boolean;
+  buttons?: Array<{
+    text: string;
+    value?: any;
+    role?: 'primary' | 'secondary';
+  }>;
 }
 
-type InternalState<T = any> = (DialogConfig<T> & {
+type InternalState = (DialogConfig & {
   open: boolean;
-  resolver?: (value?: T) => void;
+  resolver?: (value?: any) => void;
 }) | null;
 
 @Injectable({ providedIn: 'root' })
 export class DialogService {
-  // Angular signal: holds current dialog state (or null when closed)
   state = signal<InternalState>(null);
 
-  open<T = any>(config: DialogConfig<T>): Promise<T | undefined> {
-    return new Promise<T | undefined>((resolve) => {
+  open(config: DialogConfig): Promise<void> {
+    return new Promise<void>((resolve) => {
       this.state.set({
         open: true,
         closeOnBackdrop: config.closeOnBackdrop ?? true,
         title: config.title,
+        message: config.message,
         lines: config.lines,
         html: config.html,
+        imageUrl: config.imageUrl,
         buttons: config.buttons,
         resolver: resolve,
       });
     });
   }
 
-  close<T = any>(value?: T) {
+  close(value?: any) {
     const s = this.state();
     s?.resolver?.(value);
     this.state.set(null);

@@ -30,6 +30,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Full-page background using project asset (public/assets/bg-water.jpg) */
+:root{
+  --bg-image-url: url('assets/bg-water.jpg');
+  --bg-overlay: rgba(12,24,48,0.36);
+}
+
+body::before{
+  content: '';
+  position: fixed; inset: 0;
+  background-image: var(--bg-image-url);
+  background-size: cover; background-position: center center;
+  filter: blur(8px) saturate(85%);
+  transform: scale(1.03);
+  z-index: -3;
+}
+
+body::after{
+  content: '';
+  position: fixed; inset: 0; background: var(--bg-overlay); z-index: -2;
+}
+
+app-root{ position: relative; z-index: 0; }
+
 .error {
   color: #ef4444;
   font-size: 0.875rem;

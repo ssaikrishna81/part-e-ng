@@ -1,1 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Background portrait configuration */
+:root {
+  --bg-image-url: url('assets/bg-medical.jpg');
+  --bg-overlay: rgba(12, 24, 48, 0.36);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Full-page background layer */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--bg-image-url);
+  background-size: cover;
+  background-position: center center;
+  filter: blur(10px) saturate(85%);
+  transform: scale(1.03); /* avoid edge artifacts from blur */
+  z-index: -3;
+}
+
+/* Dim/colour overlay for contrast */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  z-index: -2;
+}
+
+/* Ensure app-root sits above the background */
+app-root {
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  display: block;
+}
+
+/* Make cards semi-transparent with backdrop blur */
+.card {
+  backdrop-filter: blur(4px) saturate(120%) !important;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Helpful note:
+ - Put your medical/health background image at `src/assets/bg-medical.jpg`
+ - For better performance, use a webp format and appropriately sized image
+ - Recommended image size: 1920x1080 or larger
+ - Image should be medical/healthcare themed but not too busy
+*/

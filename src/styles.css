@@ -1,1 +1,53 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Background portrait: replace --bg-image-url with your desired image (public folder or external URL) */
+:root{
+	/* use relative path (no leading slash) so dev-server resolves assets regardless of base href */
+	--bg-image-url: url('assets/bg-portrait.jpg'); /* replace with actual image path */
+	--bg-overlay: rgba(12,24,48,0.36);
+}
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+/* Full-page background layer */
+body::before{
+	content: '';
+	position: fixed;
+	inset: 0;
+	background-image: var(--bg-image-url);
+	background-size: cover;
+	background-position: center center;
+	filter: blur(10px) saturate(85%);
+	transform: scale(1.03); /* avoid edge artifacts from blur */
+	z-index: -3;
+}
+
+/* Dim/colour overlay for contrast */
+body::after{
+	content: '';
+	position: fixed;
+	inset: 0;
+	background: var(--bg-overlay);
+	z-index: -2;
+}
+
+/* Ensure app-root sits above the background */
+app-root{
+	position: relative;
+	z-index: 0;
+	min-height: 100vh;
+	display: block;
+}
+
+/* Optional: keep .opal-card centered with spacing from the background */
+.opal-card {
+	backdrop-filter: blur(4px) saturate(120%);
+	background-color: rgba(255,255,255,0.7);
+}
+
+/* Helpful note for developer:
+ - Put your portrait image at `public/assets/bg-portrait.jpg` or change --bg-image-url to an absolute URL.
+ - For better performance serve a webp or appropriately sized image. */

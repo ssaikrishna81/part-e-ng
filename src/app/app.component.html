@@ -1,10 +1,11 @@
 <header class="topbar" *ngIf="!onLoginPage">
   <h1><i>ServiceUniverse</i></h1>
   <nav class="nav-links">
-    <a routerLink="/home" routerLinkActive="active">Home</a>
-    <a routerLink="/opal-topup" routerLinkActive="active">Opal</a>
-    <a routerLink="/vaccination" routerLinkActive="active">Vaccination</a>
-    <a routerLink="/water-billing" routerLinkActive="active">Water</a>
+  <a href="#" (click)="goHome(); $event.preventDefault()" [class.active]="currentRoute === '/home' && !selectedService">Home</a>
+    <!-- Service links open the selected service inside the portal (embedded area) -->
+  <a href="#" (click)="openEmbedded('opal'); $event.preventDefault()" [class.active]="isActive('opal')">Opal</a>
+  <a href="#" (click)="openEmbedded('vaccination'); $event.preventDefault()" [class.active]="isActive('vaccination')">Vaccination</a>
+  <a href="#" (click)="openEmbedded('water'); $event.preventDefault()" [class.active]="isActive('water')">Water</a>
   </nav>
   <button class="logout-btn" (click)="logout()">Logout</button>
 </header>

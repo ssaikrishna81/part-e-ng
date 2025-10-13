@@ -20,62 +20,13 @@ export class ApiService {
   }
 
   // -------------------------
-  // Vaccination
-  // POST /api/v1/vaccinations/search
-  searchSlots(payload: { vaccine?: string; postcode?: string; date?: string }): Observable<any[]> {
-    return this.http
-      .post<any>(`${API_BASE}/vaccinations/search`, payload)
-      .pipe(map(r => (r && r.data) ? r.data : r), catchError(this.handleError));
-  }
-
-  // POST /api/v1/vaccinations/eligibility
-  checkEligibility(payload: { medicare: string; vaccine: string }): Observable<any> {
-    return this.http
-      .post<any>(`${API_BASE}/vaccinations/eligibility`, payload)
-      .pipe(catchError(this.handleError));
-  }
-
-  // POST /api/v1/vaccinations/book
-  bookVaccination(payload: { slotId: string; name: string; dob: string; email: string; payAtClinic?: boolean }): Observable<any> {
-    return this.http
-      .post<any>(`${API_BASE}/vaccinations/book`, payload)
-      .pipe(catchError(this.handleError));
-  }
+  // NOTE: service-specific API methods (Vaccination / Opal / Water) removed
+  // to keep this ApiService focused on portal authentication and common endpoints.
+  // If you need those APIs later, either restore them here or extract to a
+  // separate ServiceApi file.
 
   // -------------------------
-  // Opal topups
-  // POST /api/v1/topups
-  createTopup(payload: {
-    cardNumber: string;
-    securityCode: string;
-    amount: number;
-    topupType?: 'oneoff' | 'auto';
-    receiptEmail?: string;
-  }): Observable<any> {
-    return this.http
-      .post<any>(`${API_BASE}/topups`, payload)
-      .pipe(catchError(this.handleError));
-  }
-
-  // -------------------------
-  // Water
-  // POST /api/v1/water/bill
-  getBill(payload: { accountId: string }): Observable<any> {
-    // backend expects POST body with accountId per your docs
-    return this.http
-      .post<any>(`${API_BASE}/water/bill`, payload)
-      .pipe(catchError(this.handleError));
-  }
-
-  // POST /api/v1/water/pay
-payBill(payload: { billId: string; amount: number; cardNumber: string }): Observable<any> {
-  return this.http
-    .post<any>(`${API_BASE}/water/pay`, payload)
-    .pipe(catchError(this.handleError));
-}
-
-  // -------------------------
-  // Auth (if needed)
+  // Auth (portal)
   // POST /api/v1/auth/register
   register(payload: { name: string; email: string; password: string }): Observable<any> {
     return this.http.post<any>(`${API_BASE}/auth/register`, payload).pipe(catchError(this.handleError));

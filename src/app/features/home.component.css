@@ -1,4 +1,127 @@
-.home { max-width: 900px; margin: 24px auto; padding: 0 16px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
-.card { display: block; padding: 16px; border: 1px solid #ccc; border-radius: 12px; text-decoration: none; color: inherit; }
-.card:hover { background: #f6f6f6; }
+.home {
+	position: relative;
+	margin: 0;
+	padding: clamp(48px, 10vw, 96px) 24px clamp(72px, 12vw, 128px);
+	min-height: calc(100vh - var(--topbar-height, 56px));
+	background-image: url('/assets/bg-home.jpg');
+	background-size: cover;
+	background-position: center;
+	color: #f9fbff;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.home::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(135deg, rgba(7, 26, 48, 0.84) 0%, rgba(11, 53, 80, 0.62) 40%, rgba(26, 31, 42, 0.55) 100%);
+	z-index: 0;
+}
+
+.home.embedded {
+	background: #f5f5f7;
+	color: inherit;
+	min-height: auto;
+	padding: 0;
+}
+
+.home.embedded::before,
+.home.embedded .hero {
+	display: none;
+}
+
+.hero {
+	position: relative;
+	z-index: 1;
+	max-width: 720px;
+	backdrop-filter: blur(6px);
+	background: rgba(18, 31, 45, 0.55);
+	border-radius: 20px;
+	padding: clamp(24px, 5vw, 48px);
+	box-shadow: 0 24px 48px rgba(6, 19, 33, 0.4);
+}
+
+.eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 0.32em;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #9bd5ff;
+	margin-bottom: 16px;
+}
+
+.hero h1 {
+	font-size: clamp(2.125rem, 4vw, 3.125rem);
+	line-height: 1.1;
+	margin-bottom: 16px;
+	font-weight: 700;
+}
+
+.lead {
+	font-size: clamp(1rem, 2.2vw, 1.25rem);
+	line-height: 1.6;
+	margin-bottom: clamp(24px, 6vw, 40px);
+	color: #d7ecff;
+}
+
+.cta-strip {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 16px;
+	padding: 16px 20px;
+	border: 1px solid rgba(194, 229, 255, 0.35);
+}
+
+.cta-text {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 0.95rem;
+}
+
+.cta-text strong {
+	font-size: 1.05rem;
+	font-weight: 600;
+}
+
+.cta-text span {
+	color: #c9e6ff;
+}
+
+@media (max-width: 720px) {
+	.home {
+		padding: 96px 16px 80px;
+	}
+
+	.hero {
+		padding: 24px;
+	}
+
+	.benefits {
+		gap: 12px;
+	}
+}
+
+/* Embedded service area */
+.embedded-wrapper {
+	position: fixed;
+	/* Use a CSS variable for header height; default to 56px. */
+	top: var(--topbar-height, 56px);
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: block;
+	background: white;
+	z-index: 10;
+}
+.embedded-iframe {
+	width: 100%;
+	height: calc(100vh - var(--topbar-height, 56px));
+	border: 0;
+	display: block;
+}

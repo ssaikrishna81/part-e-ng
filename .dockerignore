@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.yarn
+coverage
+dist
+tmp
+.git
+.gitignore
+.vscode
+.DS_Store
+Thumbs.db
+**/*.log

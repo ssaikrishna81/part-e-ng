@@ -1,10 +1,22 @@
-<section class="home">
-  <h2>Welcome</h2>
-  <p>Choose a service to demo:</p>
+<section class="home" [class.embedded]="embeddedSrc">
+  <div *ngIf="!embeddedSrc" class="hero">
+    <p class="eyebrow">Sydney Services Portal</p>
+    <h1>Your daily hub for Opal, Vaccinations, and Water Billing</h1>
+    <p class="lead">
+      Launch every essential council service from one secure screen. Pick a tile from the navigation bar
+      above to open it instantly without leaving the portal.
+    </p>
 
-  <div class="grid">
-    <a routerLink="/opal-topup" class="card">Opal Card Top-Up</a>
-    <a routerLink="/vaccination" class="card">Vaccination Booking</a>
-    <a routerLink="/water-billing" class="card">Water Billing</a>
+    <div class="cta-strip">
+      <div class="cta-text">
+        <strong>Ready to get started?</strong>
+        <span>Select a service from the top navigation to open it right inside the portal.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- service buttons moved to navbar; the main body below hosts the embedded service -->
+  <div *ngIf="embeddedSrc" class="embedded-wrapper">
+    <iframe [src]="embeddedSrc" frameborder="0" class="embedded-iframe"></iframe>
   </div>
 </section>

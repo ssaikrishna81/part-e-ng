@@ -1,0 +1,16 @@
+# Development Dockerfile for running the Angular dev server inside a container
+FROM node:20-alpine
+WORKDIR /app
+
+# Copy package manifests and install
+COPY package.json package-lock.json ./
+RUN npm ci --silent
+
+# Copy source
+COPY . .
+
+# Expose dev port
+EXPOSE 5631
+
+# Default command runs the dev server on 0.0.0.0:5631
+CMD ["npm", "run", "start"]

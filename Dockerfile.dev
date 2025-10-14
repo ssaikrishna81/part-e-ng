@@ -1,0 +1,27 @@
+# Development Dockerfile for running Angular dev server
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies first (for better caching)
+COPY package*.json ./
+RUN npm ci --silent --only=production=false
+
+# Copy source code (this layer changes more frequently)
+COPY . .
+
+# Create a non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S angular -u 1001
+USER angular
+
+# Expose development port
+EXPOSE 5632
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:5632 || exit 1
+
+# Start development server
+CMD ["npm", "run", "start"]

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  vaccination-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5632:5632"
+    volumes:
+      # Mount source code for live reload (optional)
+      - .:/app
+      - /app/node_modules  # Prevent overwriting node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # For file watching on Windows
+    restart: unless-stopped
+    stdin_open: true  # Keep container interactive
+    tty: true
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5632"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

@@ -21,6 +21,7 @@ export class App implements AfterViewInit {
   selectedService: string | null = null;
   private sub: Subscription | null = null;
   currentRoute = '';
+  today = new Date();
 
   constructor(private router: Router, private api: ApiService, private portal: PortalService) {
     this.router.events
@@ -28,6 +29,11 @@ export class App implements AfterViewInit {
       .subscribe((e: NavigationEnd) => {
         this.onLoginPage = e.urlAfterRedirects.startsWith('/login');
         this.currentRoute = e.urlAfterRedirects || '';
+        const cleaned = this.currentRoute.split('?')[0];
+        const isServiceRoute = cleaned.startsWith('/opal') || cleaned.startsWith('/vaccine') || cleaned.startsWith('/water');
+        if (!isServiceRoute) {
+          this.selectedService = null;
+        }
       });
 
     this.sub = this.portal.key$.subscribe(k => this.selectedService = k);
@@ -74,11 +80,18 @@ export class App implements AfterViewInit {
   // when user explicitly clicks Home, clear any embedded selection so Home shows welcome
   goHome() {
     this.portal.close();
+    this.selectedService = null;
     this.router.navigateByUrl('/home');
   }
 
   isActive(key: string) {
     return this.selectedService === key;
+  }
+
+  goToStaticPage(path: string) {
+    this.portal.close();
+    this.selectedService = null;
+    this.router.navigateByUrl('/' + path);
   }
 
   ngOnDestroy() {

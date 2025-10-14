@@ -1,18 +1,68 @@
 <section class="home" [class.embedded]="embeddedSrc">
-  <div *ngIf="!embeddedSrc" class="hero">
-    <p class="eyebrow">Sydney Services Portal</p>
-    <h1>Your daily hub for Opal, Vaccinations, and Water Billing</h1>
-    <p class="lead">
-      Launch every essential council service from one secure screen. Pick a tile from the navigation bar
-      above to open it instantly without leaving the portal.
-    </p>
+  <div *ngIf="!embeddedSrc" class="home-content">
+    <div class="hero">
+      <p class="eyebrow">ServiceUniverse Portal</p>
+      <h1>Your daily hub for Opal, Vaccinations, and Water Billing</h1>
+      <p class="lead">
+        Launch every essential council service from one secure screen. Pick a tile from the navigation bar above to open it
+        instantly without leaving the portal.
+      </p>
 
-    <div class="cta-strip">
-      <div class="cta-text">
-        <strong>Ready to get started?</strong>
-        <span>Select a service from the top navigation to open it right inside the portal.</span>
+      <div class="cta-strip">
+        <div class="cta-text">
+          <strong>Ready to get started?</strong>
+          <span>Select a service from the top navigation to open it right inside the portal.</span>
+        </div>
       </div>
     </div>
+
+    <section class="insight-panels">
+      <article class="insight-card">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li>
+            <strong>Sign in once</strong>
+            <span>Use your ServiceUniverse account to unlock every available council service.</span>
+          </li>
+          <li>
+            <strong>Choose a service</strong>
+            <span>Open Opal, Vaccinations, or Water billing without ever leaving the portal shell.</span>
+          </li>
+          <li>
+            <strong>Complete your task</strong>
+            <span>Work inside a secure iframe so payments and forms stay protected and familiar.</span>
+          </li>
+        </ol>
+      </article>
+
+      <article class="insight-card">
+        <h2>Why residents choose ServiceUniverse</h2>
+        <ul class="benefits">
+          <li>Unified dashboard that keeps your most-used government services one click away.</li>
+          <li>Consistent accessibility and language support across transport, health, and utilities.</li>
+          <li>Real-time status indicators so you know when a service is in maintenance and what to do next.</li>
+          <li>Upcoming features like licence renewals and rates notices already on the roadmap.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="service-highlights">
+      <h2>What you can manage today</h2>
+      <div class="highlight-grid">
+        <article class="highlight-card">
+          <h3>Opal travel essentials</h3>
+          <p>Top up balances and manage your Opal card in one place.</p>
+        </article>
+        <article class="highlight-card">
+          <h3>Vaccination wellness</h3>
+          <p>Book appointments, check eligibility, and secure slot bookings for upcoming clinics.</p>
+        </article>
+        <article class="highlight-card">
+          <h3>Water household management</h3>
+          <p>Review usage trends, pay bills securely, and lodge support tickets for water issues around your home.</p>
+        </article>
+      </div>
+    </section>
   </div>
 
   <!-- service buttons moved to navbar; the main body below hosts the embedded service -->

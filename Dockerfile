@@ -12,8 +12,8 @@ RUN npm ci --silent
 # copy full project
 COPY . .
 
-# build production bundle (angular.json defaultConfiguration = production)
-RUN npm run build --silent
+# build production bundle (Angular CLI 17+ outputs to dist/<project>/browser)
+RUN npm run build -- --configuration production --base-href /opal/ --deploy-url /opal/
 
 # Stage 2: serve with nginx
 FROM nginx:stable-alpine AS production
@@ -25,8 +25,8 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # copy built files from build stage
-# adjust path to your angular output folder (dist/<project-name>)
-COPY --from=build /app/dist/part-e-opal /usr/share/nginx/html
+# Angular 17+ outputs browser assets under dist/<project-name>/browser
+COPY --from=build /app/dist/part-e-opal/browser /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

@@ -4,7 +4,7 @@
   <a href="#" (click)="goHome(); $event.preventDefault()" [class.active]="currentRoute === '/home' && !selectedService">Home</a>
     <!-- Service links open the selected service inside the portal (embedded area) -->
   <a href="#" (click)="openEmbedded('opal'); $event.preventDefault()" [class.active]="isActive('opal')">Opal</a>
-  <a href="#" (click)="openEmbedded('vaccination'); $event.preventDefault()" [class.active]="isActive('vaccination')">Vaccination</a>
+  <a href="#" (click)="openEmbedded('vaccine'); $event.preventDefault()" [class.active]="isActive('vaccine')">Vaccine</a>
   <a href="#" (click)="openEmbedded('water'); $event.preventDefault()" [class.active]="isActive('water')">Water</a>
   </nav>
   <button class="logout-btn" (click)="logout()">Logout</button>

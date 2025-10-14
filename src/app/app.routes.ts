@@ -9,7 +9,8 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   // service routes - render HomeComponent but with service selected so URL shows the service
   { path: 'opal', component: HomeComponent },
-  { path: 'vaccination', component: HomeComponent },
+  { path: 'vaccine', component: HomeComponent },
+  { path: 'vaccination', redirectTo: 'vaccine', pathMatch: 'full' },
   { path: 'water', component: HomeComponent },
   // wildcard fallback
   { path: '**', redirectTo: 'login' }

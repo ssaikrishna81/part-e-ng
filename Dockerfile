@@ -12,10 +12,15 @@ COPY . ./
 RUN npm run build -- --configuration production
 
 # Stage 2 - Nginx
-FROM nginx:stable-alpine
+FROM nginx:stable-alpine AS production
 
 # Copy built files. Dist output may be under /app/dist/<proj>; copying all subfolders works
-COPY --from=build /app/dist/* /usr/share/nginx/html/
+## Copy the built app into nginx html root.
+## Angular outputs into dist/<project-name> (e.g. dist/part-e-home).
+## Copy that subfolder's contents into nginx html so index.html is at /usr/share/nginx/html/index.html
+## Angular sometimes outputs a 'browser' subfolder inside dist/<project>.
+## Copy the browser/* contents if present so index.html is at the nginx root.
+COPY --from=build /app/dist/part-e-home/browser/ /usr/share/nginx/html/
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf

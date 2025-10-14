@@ -28,8 +28,9 @@ export class HomeComponent {
     // open service based on current route path (so /opal opens opal, etc.)
     this.routeSub = this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: NavigationEnd) => {
       const path = e.urlAfterRedirects.replace(/^\//, '').split('?')[0] || '';
-      if (path === 'opal' || path === 'vaccination' || path === 'water') {
-        this.portal.openService(path);
+      const normalized = path === 'vaccination' ? 'vaccine' : path;
+      if (normalized === 'opal' || normalized === 'vaccine' || normalized === 'water') {
+        this.portal.openService(normalized);
       } else if (path === '' || path === 'home' || path === 'login') {
         this.portal.close();
       }

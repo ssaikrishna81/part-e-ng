@@ -1,5 +1,5 @@
 # Development Dockerfile: runs the Angular dev server so you can mount source and hot-reload
-FROM node:20-alpine
+FROM node:20
 WORKDIR /app
 COPY package*.json ./
 # Install dependencies without optional native binaries (more reliable inside containers)

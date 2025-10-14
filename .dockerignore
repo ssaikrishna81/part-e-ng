@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.vscode
+*.log
+tmp
+.DS_Store
+.env
+coverage
+.idea
+public/assets/*.psd
+public/assets/*.psb
+**/*.mp4
+**/*.mov

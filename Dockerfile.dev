@@ -2,7 +2,8 @@
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --silent
+# Install dependencies without optional native binaries (more reliable inside containers)
+RUN npm ci --silent --no-optional
 COPY . .
 EXPOSE 5633
 CMD ["npm", "run", "start"]

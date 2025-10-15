@@ -42,8 +42,15 @@
   box-shadow: 0 8px 16px rgba(16, 88, 187, 0.15);
 }
 
-.logout-btn {
+.auth-controls {
   margin-left: auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.login-btn,
+.logout-btn {
   text-decoration: none;
   color: #234162;
   padding: 8px 18px;
@@ -55,10 +62,26 @@
   transition: all 0.2s ease;
 }
 
+.login-btn:hover,
 .logout-btn:hover {
   background: #1058bb;
   color: #ffffff;
   border-color: #0d4ea5;
+}
+
+.login-btn.active {
+  background: #1058bb;
+  color: #ffffff;
+}
+
+.login-btn[disabled] {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.logout-btn[disabled] {
+  opacity: 0.65;
+  cursor: wait;
 }
 
 .portal-footer {
@@ -124,8 +147,14 @@
 }
 
 @media (max-width: 720px) {
-  .logout-btn {
+  .auth-controls {
     width: 100%;
+    justify-content: stretch;
+  }
+
+  .login-btn,
+  .logout-btn {
+    flex: 1;
     text-align: center;
   }
 }

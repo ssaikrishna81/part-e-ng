@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { Router } from '@angular/router';
 import { ApiService } from '../../app/shared/api.service'; // adjust if your path differs
 import { finalize } from 'rxjs/operators';
+import { AuthStateService } from '../../app/shared/auth-state.service';
 
 type View = 'login' | 'register' | 'forgot';
 
@@ -25,7 +26,12 @@ export class LoginComponent implements OnInit {
   registerForm!: FormGroup;
   forgotForm!: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private api: ApiService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private api: ApiService,
+    private authState: AuthStateService
+  ) {
     // init forms
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,7 +51,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (localStorage.getItem('loggedIn') === 'true') {
+    if (this.authState.isLoggedIn()) {
       this.router.navigateByUrl('/home');
     }
   }
@@ -77,14 +83,7 @@ export class LoginComponent implements OnInit {
         next: (res) => {
           // common token locations: res.token | res.accessToken | res.data.token
           const token = res?.token || res?.accessToken || res?.data?.token || res?.data?.accessToken;
-          if (token) {
-            localStorage.setItem('auth_token', token);
-            localStorage.setItem('loggedIn', 'true');
-          } else {
-            // still mark logged in to allow demo flows if backend doesn't return a token
-            localStorage.setItem('loggedIn', 'true');
-          }
-
+          this.authState.markLoggedIn(token);
           this.success = 'Login successful';
           setTimeout(() => this.router.navigateByUrl('/home'), 200);
         },

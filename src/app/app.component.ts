@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { ApiService } from './shared/api.service'; // <-- added
 import { PortalService } from './shared/portal.service';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { AuthStateService } from './shared/auth-state.service';
 
 @Component({
   selector: 'app-root',
@@ -15,19 +16,24 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class App implements AfterViewInit {
-  onLoginPage = false;
+export class App implements AfterViewInit, OnDestroy {
   loggingOut = false;
   selectedService: string | null = null;
   private sub: Subscription | null = null;
+  private authSub: Subscription | null = null;
   currentRoute = '';
   today = new Date();
+  isLoggedIn = false;
 
-  constructor(private router: Router, private api: ApiService, private portal: PortalService) {
+  constructor(
+    private router: Router,
+    private api: ApiService,
+    private portal: PortalService,
+    private authState: AuthStateService
+  ) {
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
-        this.onLoginPage = e.urlAfterRedirects.startsWith('/login');
         this.currentRoute = e.urlAfterRedirects || '';
         const cleaned = this.currentRoute.split('?')[0];
         const isServiceRoute = cleaned.startsWith('/opal') || cleaned.startsWith('/vaccine') || cleaned.startsWith('/water');
@@ -37,6 +43,10 @@ export class App implements AfterViewInit {
       });
 
     this.sub = this.portal.key$.subscribe(k => this.selectedService = k);
+    this.isLoggedIn = this.authState.isLoggedIn();
+    this.authSub = this.authState.isLoggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -58,13 +68,16 @@ export class App implements AfterViewInit {
   }
 
   logout() {
+    if (this.loggingOut) {
+      return;
+    }
+
     // call backend logout if available, then always clear client state
     this.loggingOut = true;
     this.api.logout()?.pipe(finalize(() => {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('loggedIn');
+      this.authState.markLoggedOut();
       this.loggingOut = false;
-      this.router.navigateByUrl('/login');
+      this.router.navigateByUrl('/home');
     })).subscribe({
       next: () => { /* successful server logout */ },
       error: () => { /* ignore server failure, still clear client state */ }
@@ -88,6 +101,12 @@ export class App implements AfterViewInit {
     return this.selectedService === key;
   }
 
+  goToLogin() {
+    this.portal.close();
+    this.selectedService = null;
+    this.router.navigateByUrl('/login');
+  }
+
   goToStaticPage(path: string) {
     this.portal.close();
     this.selectedService = null;
@@ -96,5 +115,6 @@ export class App implements AfterViewInit {
 
   ngOnDestroy() {
     this.sub?.unsubscribe();
+    this.authSub?.unsubscribe();
   }
 }

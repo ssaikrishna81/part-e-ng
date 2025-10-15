@@ -1,6 +1,6 @@
 .info-page {
   padding: clamp(40px, 8vw, 72px) clamp(16px, 6vw, 80px);
-  background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+  background: linear-gradient(135deg, #dde8f0 0%, #c4d6e5 100%);
   min-height: calc(100vh - var(--topbar-height, 56px));
 }
 

@@ -103,6 +103,10 @@
   text-decoration: underline;
 }
 
+.footer-links-offset {
+  padding-left: clamp(60px, 8vw, 120px);
+}
+
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding-top: 16px;

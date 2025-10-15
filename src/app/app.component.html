@@ -17,14 +17,14 @@
       (click)="goToStaticPage('about'); $event.preventDefault()"
       [class.active]="currentRoute.startsWith('/about')"
     >
-      About
+      About us
     </a>
     <a
       href="#"
       (click)="goToStaticPage('contact'); $event.preventDefault()"
       [class.active]="currentRoute.startsWith('/contact')"
     >
-      Contact
+      Contact us
     </a>
   </nav>
   <button class="logout-btn" (click)="logout()">Logout</button>
@@ -42,7 +42,7 @@
         convenient place.
       </p>
     </div>
-    <div class="footer-section">
+    <div class="footer-section footer-links-offset">
       <h4>Quick links</h4>
       <ul>
         <li><a href="#" (click)="goHome(); $event.preventDefault()">Portal home</a></li>
@@ -61,8 +61,8 @@
   <div class="footer-bottom">
     <p>
       &copy; {{ today | date:'yyyy' }} ServiceUniverse. All rights reserved.
-      <a href="#" (click)="goToStaticPage('about'); $event.preventDefault()">About</a> ·
-      <a href="#" (click)="goToStaticPage('contact'); $event.preventDefault()">Contact</a>
+      <a href="#" (click)="goToStaticPage('about'); $event.preventDefault()">About us</a> ·
+      <a href="#" (click)="goToStaticPage('contact'); $event.preventDefault()">Contact us</a>
     </p>
   </div>
 </footer>

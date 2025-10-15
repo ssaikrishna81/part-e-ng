@@ -120,6 +120,10 @@ export class OpalTopupComponent {
     return amount <= this.getMaxTopupAmount();
   }
 
+  get balanceUnlocked(): boolean {
+    return this.currentBalance !== null;
+  }
+
   async checkBalance() {
     if (!this.canCheckBalance()) return;
 

@@ -44,88 +44,88 @@
         </div>
       </div>
       
-      <!-- Payment details -->
-      <div class="row full-width" *ngIf="currentBalance !== null">
-        <h3>Payment Details</h3>
-      </div>
-      
-      <div class="row" *ngIf="currentBalance !== null">
-        <label>Amount</label>
-        <select formControlName="amountOption">
-          <option *ngIf="isAmountAllowed(10)" value="10">$10</option>
-          <option *ngIf="isAmountAllowed(20)" value="20">$20</option>
-          <option *ngIf="isAmountAllowed(50)" value="50">$50</option>
-          <option *ngIf="isAmountAllowed(100)" value="100">$100</option>
-          <option value="custom">Custom…</option>
-        </select>
-      </div>
-
-      <div class="row" *ngIf="form.get('amountOption')?.value === 'custom'">
-        <label>Custom amount (AUD)</label>
-        <input type="number" formControlName="customAmount" [attr.min]="minAmount" [attr.max]="getMaxTopupAmount()" />
-        <small class="hint">Available top-up: ${{ getMaxTopupAmount().toFixed(2) }}</small>
-        <small class="error" *ngIf="form.get('customAmount')?.invalid && (form.get('customAmount')?.touched || form.get('customAmount')?.dirty)">
-          Enter an amount between ${{ minAmount }} and ${{ getMaxTopupAmount() }}.
-        </small>
-      </div>
-
-      <div class="row full-width">
-        <label>Name on Card</label>
-        <input formControlName="nameOnCard" placeholder="Full name as shown on card" />
-        <small class="error" *ngIf="form.get('nameOnCard')?.invalid && (form.get('nameOnCard')?.touched || form.get('nameOnCard')?.dirty)">
-          Enter the cardholder name
-        </small>
-      </div>
-
-      <div class="row">
-        <label>Card Number</label>
-        <input formControlName="paymentCardNumber" placeholder="0000 0000 0000 0000" maxlength="16" />
-        <small class="error" *ngIf="form.get('paymentCardNumber')?.invalid && (form.get('paymentCardNumber')?.touched || form.get('paymentCardNumber')?.dirty)">
-          Enter a valid card number
-        </small>
-      </div>
-
-      <div class="row">
-        <label>Expiry Date</label>
-        <input formControlName="expiryDate" placeholder="MM/YY" maxlength="5" />
-        <small class="error" *ngIf="form.get('expiryDate')?.invalid && (form.get('expiryDate')?.touched || form.get('expiryDate')?.dirty)">
-          Enter a valid expiry date (MM/YY)
-        </small>
-      </div>
-
-      <div class="row">
-        <label>CVV</label>
-        <input formControlName="cvv" placeholder="123" maxlength="4" type="password" />
-        <small class="error" *ngIf="form.get('cvv')?.invalid && (form.get('cvv')?.touched || form.get('cvv')?.dirty)">
-          Enter a valid CVV
-        </small>
-      </div>
-
-
-
-      <div class="row full-width">
-        <label>Top-up type</label>
-        <div class="radio-group">
-          <label><input type="radio" formControlName="topupType" value="oneoff" /> One-off</label>
-          <label><input type="radio" formControlName="topupType" value="auto" /> Auto top-up</label>
+      <ng-container *ngIf="balanceUnlocked">
+        <!-- Payment details -->
+        <div class="row full-width">
+          <h3>Payment Details</h3>
         </div>
-        <small class="muted" *ngIf="form.get('topupType')?.value === 'auto'">
-          Requires registered card; this updates your auto top-up settings.
-        </small>
-      </div>
+        
+        <div class="row">
+          <label>Amount</label>
+          <select formControlName="amountOption">
+            <option *ngIf="isAmountAllowed(10)" value="10">$10</option>
+            <option *ngIf="isAmountAllowed(20)" value="20">$20</option>
+            <option *ngIf="isAmountAllowed(50)" value="50">$50</option>
+            <option *ngIf="isAmountAllowed(100)" value="100">$100</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
 
-      <div class="row full-width">
-        <label><input type="checkbox" formControlName="receipt" /> Email me a receipt</label>
-        <div *ngIf="form.get('receipt')?.value" class="slide-in">
-          <input type="email" formControlName="receiptEmail" placeholder="your@email.com" />
-          <small class="error" *ngIf="form.get('receiptEmail')?.invalid && (form.get('receiptEmail')?.touched || form.get('receiptEmail')?.dirty)">
-            Enter a valid email.
+        <div class="row" *ngIf="form.get('amountOption')?.value === 'custom'">
+          <label>Custom amount (AUD)</label>
+          <input type="number" formControlName="customAmount" [attr.min]="minAmount" [attr.max]="getMaxTopupAmount()" />
+          <small class="hint">Available top-up: ${{ getMaxTopupAmount().toFixed(2) }}</small>
+          <small class="error" *ngIf="form.get('customAmount')?.invalid && (form.get('customAmount')?.touched || form.get('customAmount')?.dirty)">
+            Enter an amount between ${{ minAmount }} and ${{ getMaxTopupAmount() }}.
           </small>
         </div>
-      </div>
+
+        <div class="row full-width">
+          <label>Name on Card</label>
+          <input formControlName="nameOnCard" placeholder="Full name as shown on card" />
+          <small class="error" *ngIf="form.get('nameOnCard')?.invalid && (form.get('nameOnCard')?.touched || form.get('nameOnCard')?.dirty)">
+            Enter the cardholder name
+          </small>
+        </div>
+
+        <div class="row">
+          <label>Card Number</label>
+          <input formControlName="paymentCardNumber" placeholder="0000 0000 0000 0000" maxlength="16" />
+          <small class="error" *ngIf="form.get('paymentCardNumber')?.invalid && (form.get('paymentCardNumber')?.touched || form.get('paymentCardNumber')?.dirty)">
+            Enter a valid card number
+          </small>
+        </div>
+
+        <div class="row">
+          <label>Expiry Date</label>
+          <input formControlName="expiryDate" placeholder="MM/YY" maxlength="5" />
+          <small class="error" *ngIf="form.get('expiryDate')?.invalid && (form.get('expiryDate')?.touched || form.get('expiryDate')?.dirty)">
+            Enter a valid expiry date (MM/YY)
+          </small>
+        </div>
+
+        <div class="row">
+          <label>CVV</label>
+          <input formControlName="cvv" placeholder="123" maxlength="4" type="password" />
+          <small class="error" *ngIf="form.get('cvv')?.invalid && (form.get('cvv')?.touched || form.get('cvv')?.dirty)">
+            Enter a valid CVV
+          </small>
+        </div>
+
+        <div class="row full-width">
+          <label>Top-up type</label>
+          <div class="radio-group">
+            <label><input type="radio" formControlName="topupType" value="oneoff" /> One-off</label>
+            <label><input type="radio" formControlName="topupType" value="auto" /> Auto top-up</label>
+          </div>
+          <small class="muted" *ngIf="form.get('topupType')?.value === 'auto'">
+            Requires registered card; this updates your auto top-up settings.
+          </small>
+        </div>
+
+        <div class="row full-width">
+          <label><input type="checkbox" formControlName="receipt" /> Email me a receipt</label>
+          <div *ngIf="form.get('receipt')?.value" class="slide-in">
+            <input type="email" formControlName="receiptEmail" placeholder="your@email.com" />
+            <small class="error" *ngIf="form.get('receiptEmail')?.invalid && (form.get('receiptEmail')?.touched || form.get('receiptEmail')?.dirty)">
+              Enter a valid email.
+            </small>
+          </div>
+        </div>
+      </ng-container>
     </div>
 
-    <div class="actions">
+    <div class="actions" *ngIf="balanceUnlocked">
       <button type="submit" [disabled]="form.invalid || loading">
         {{ loading ? 'Submitting…' : 'Top-Up' }}
       </button>

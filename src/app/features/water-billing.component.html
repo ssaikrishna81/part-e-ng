@@ -90,12 +90,44 @@
       </div>
 
       <div class="input-group">
+        <label>Name on Card</label>
+        <input formControlName="nameOnCard" placeholder="Full name as shown on card" />
+        <small class="error"
+          *ngIf="payForm.get('nameOnCard')?.invalid && (payForm.get('nameOnCard')?.touched || payForm.get('nameOnCard')?.dirty)">
+          <span *ngIf="payForm.get('nameOnCard')?.errors?.['required']">Please enter the cardholder name</span>
+          <span *ngIf="payForm.get('nameOnCard')?.errors?.['minlength']">Name must be at least 3 characters</span>
+        </small>
+      </div>
+
+      <div class="input-group">
         <label>Card Number</label>
-        <input formControlName="cardNumber" placeholder="4111 1111 1111 1111" class="card-input" />
-        <small class="hint">Demo: Use any valid-looking card number</small>
+        <input formControlName="cardNumber" placeholder="0000 0000 0000 0000" maxlength="16" />
         <small class="error"
           *ngIf="payForm.get('cardNumber')?.invalid && (payForm.get('cardNumber')?.touched || payForm.get('cardNumber')?.dirty)">
-          Please enter a card number
+          <span *ngIf="payForm.get('cardNumber')?.errors?.['required']">Please enter a card number</span>
+          <span *ngIf="payForm.get('cardNumber')?.errors?.['pattern']">Enter a valid 16-digit card number</span>
+        </small>
+      </div>
+
+      <div class="input-group">
+        <label>Expiry Date</label>
+        <input formControlName="expiryDate" placeholder="MM/YY" maxlength="5" />
+        <small class="hint">Format: MM/YY</small>
+        <small class="error"
+          *ngIf="payForm.get('expiryDate')?.invalid && (payForm.get('expiryDate')?.touched || payForm.get('expiryDate')?.dirty)">
+          <span *ngIf="payForm.get('expiryDate')?.errors?.['required']">Please enter expiry date</span>
+          <span *ngIf="payForm.get('expiryDate')?.errors?.['pattern']">Enter a valid expiry date (MM/YY)</span>
+        </small>
+      </div>
+
+      <div class="input-group">
+        <label>CVV</label>
+        <input formControlName="cvv" placeholder="123" maxlength="4" type="password" />
+        <small class="hint">3 or 4 digits on the back of your card</small>
+        <small class="error"
+          *ngIf="payForm.get('cvv')?.invalid && (payForm.get('cvv')?.touched || payForm.get('cvv')?.dirty)">
+          <span *ngIf="payForm.get('cvv')?.errors?.['required']">Please enter CVV</span>
+          <span *ngIf="payForm.get('cvv')?.errors?.['pattern']">Enter a valid 3 or 4 digit CVV</span>
         </small>
       </div>
 

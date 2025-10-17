@@ -35,7 +35,10 @@ export class WaterBillingComponent {
       billId: [{ value: '', disabled: true }, Validators.required],
       amountOption: ['full', Validators.required], // 'full' | '50' | '100' | '200' | 'custom'
       customAmount: [{ value: null, disabled: true }],
-      cardNumber: ['', Validators.required]
+      nameOnCard: ['', [Validators.required, Validators.minLength(3)]],
+      cardNumber: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
+      expiryDate: ['', [Validators.required, Validators.pattern(/^(0[1-9]|1[0-2])\/([0-9]{2})$/)]],
+      cvv: ['', [Validators.required, Validators.pattern(/^\d{3,4}$/)]]
     });
 
     // react to amount option changes
@@ -43,17 +46,16 @@ export class WaterBillingComponent {
   }
 
   fetch() {
-    if (this.fetchForm.invalid) {
-      this.dialog.open({
-        title: 'Error',
-        message: 'Please enter a payment number'
-      });
-      return;
-    }
     this.fetching = true;
     this.bill = null; this.selectedBill = null; this.payResult = null; this.payError = '';
 
-    this.api.getBill({ paymentNumber: this.fetchForm.value.paymentNumber }).subscribe({
+    const fallbackPaymentNumber = 'P-100001';
+    const paymentRaw = (this.fetchForm.value.paymentNumber ?? '').toString().trim();
+    const paymentNumber = paymentRaw || fallbackPaymentNumber;
+
+    this.fetchForm.patchValue({ paymentNumber }, { emitEvent: false });
+
+    this.api.getBill({ paymentNumber }).subscribe({
       next: (res) => { this.bill = res; this.fetching = false; },
       error: (err) => { this.bill = { error: err?.message || 'Fetch failed' }; this.fetching = false; }
     });

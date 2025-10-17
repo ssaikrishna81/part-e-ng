@@ -18,6 +18,12 @@ export class PortalService {
     water: '/water/'
   };
 
+  private readonly devHostPorts: Record<ServiceKey, string> = {
+    opal: 'http://localhost:4201/',
+    vaccine: 'http://localhost:4202/',
+    water: 'http://localhost:4203/'
+  };
+
   private readonly composeFallback: Record<ServiceKey, string> = {
     opal: 'http://localhost:8082/',
     vaccine: 'http://localhost:8083/',
@@ -73,14 +79,12 @@ export class PortalService {
     }
 
     const port = window.location.port;
-    if (port === '' || port === '80' || port === '8080') {
-      return new URL(this.pathMap[key], window.location.origin).toString();
+    if (port === '8080' || port === '4200') {
+      return this.devHostPorts[key];
     }
 
-    if (port === '4200') {
-      // assume the unified dev gateway is running on 8080
-      const gateway = window.location.origin.replace(/:4200$/, ':8080');
-      return new URL(this.pathMap[key], gateway).toString();
+    if (port === '' || port === '80') {
+      return new URL(this.pathMap[key], window.location.origin).toString();
     }
 
     return this.composeFallback[key];
